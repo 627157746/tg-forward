@@ -1,0 +1,16 @@
+# 环境变量
+.env
+
+# Telegram session
+*.session
+*.session-journal
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# 日志
+*.log
+
+.idea/
