@@ -5,7 +5,6 @@ import logging
 from telethon import TelegramClient, events
 from config import *
 import socks
-import os
 
 # 设置日志
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
@@ -18,8 +17,8 @@ if USE_PROXY:
     proxy = (socks.SOCKS5, PROXY_HOST, PROXY_PORT)
 
 client = TelegramClient(
-    'session', 
-    TG_API_ID, 
+    'session',
+    TG_API_ID,
     TG_API_HASH,
     proxy=proxy
 )
@@ -28,14 +27,14 @@ def send_to_wecom(message):
     """发送消息到企业微信机器人"""
     url = f'https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key={WECOM_BOT_KEY}'
     headers = {'Content-Type': 'application/json'}
-    
+
     data = {
         'msgtype': 'text',
         'text': {
             'content': message
         }
     }
-    
+
     try:
         response = requests.post(url, headers=headers, data=json.dumps(data))
         result = response.json()
@@ -53,11 +52,17 @@ async def handler(event):
         # 获取消息内容
         message = event.message
         sender = await event.get_sender()
-        
+
+        # 检查消息是否包含屏蔽关键词
+        if message.text:
+            for keyword in BLOCKED_KEYWORDS:
+                if keyword.lower() in message.text.lower():
+                    logger.info(f"消息包含屏蔽关键词 '{keyword}'，不转发")
+                    return
+
         # 构建转发消息格式
         forward_msg = f'{message.text}\n'
-        
-        
+
         # 发送到企业微信
         send_to_wecom(forward_msg)
     except Exception as e:
@@ -68,7 +73,7 @@ async def main():
         # 连接到Telegram
         await client.start()
         logger.info('Telegram client started')
-        
+
         # 运行直到断开连接
         await client.run_until_disconnected()
     except Exception as e:
@@ -78,7 +83,7 @@ async def main():
 async def run_with_retries():
     max_retries = 3
     retry_count = 0
-    
+
     while retry_count < max_retries:
         try:
             await main()
@@ -93,7 +98,7 @@ async def run_with_retries():
                 logger.error("已达到最大重试次数，程序退出")
 
 if __name__ == '__main__':
-    asyncio.run(run_with_retries()) 
+    asyncio.run(run_with_retries())
 
 
 

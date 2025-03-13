@@ -16,3 +16,7 @@ WECOM_BOT_KEY = os.getenv('WECOM_BOT_KEY')
 USE_PROXY = os.getenv('USE_PROXY', 'false').lower() == 'true'
 PROXY_HOST = os.getenv('PROXY_HOST', '127.0.0.1')
 PROXY_PORT = int(os.getenv('PROXY_PORT', '7890')) 
+
+# 屏蔽关键词配置
+BLOCKED_KEYWORDS = os.getenv('BLOCKED_KEYWORDS', '').split(',')
+BLOCKED_KEYWORDS = [keyword.strip() for keyword in BLOCKED_KEYWORDS if keyword.strip()] 

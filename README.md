@@ -6,6 +6,7 @@
 
 - 监听指定 Telegram 群组的消息
 - 自动转发到企业微信机器人
+- 支持屏蔽包含特定关键词的消息
 - 支持代理配置
 - Docker 部署
 
@@ -40,6 +41,9 @@ WECOM_BOT_KEY=bot_key         # 企业微信机器人 key
 USE_PROXY=false               # 是否使用代理
 PROXY_HOST=127.0.0.1         # 代理主机地址
 PROXY_PORT=7890              # 代理端口
+
+# 屏蔽关键词配置
+BLOCKED_KEYWORDS=关键词1,关键词2,关键词3  # 用逗号分隔的关键词列表
 ```
 
 3. 首次运行（用于验证 Telegram 账号）
